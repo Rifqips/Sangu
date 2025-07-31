@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "id.application.sangu"
+    namespace = "id.application.sangugue"
     compileSdk = 36
 
     defaultConfig {
