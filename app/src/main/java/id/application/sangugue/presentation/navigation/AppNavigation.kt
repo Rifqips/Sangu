@@ -7,11 +7,13 @@ import androidx.navigation.compose.composable
 import id.application.sangugue.presentation.screen.auth.login.LoginScreen
 import id.application.sangugue.presentation.screen.auth.register.RegisterScreen
 import id.application.sangugue.presentation.screen.auth.splash.SplashScreen
+import id.application.sangugue.presentation.screen.dashboard.DashboardScreen
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Login : Screen("login")
     object Register : Screen("register")
+    object Dashboard : Screen("dashboard")
 }
 
 @Composable
@@ -25,6 +27,9 @@ fun AppNavGraph(navController: NavHostController) {
         }
         composable(Screen.Register.route) {
             RegisterScreen(navController)
+        }
+        composable(Screen.Dashboard.route) {
+            DashboardScreen(navController)
         }
     }
 }

@@ -1,4 +1,4 @@
-package id.application.sangugue.data.model
+package id.application.sangugue.data.model.auth
 
 data class UserDto(
     val username: String = "",

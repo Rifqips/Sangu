@@ -70,7 +70,7 @@ fun LoginScreen(navController: NavHostController) {
         Spacer(Modifier.height(24.dp))
 
         Button(
-            onClick = { /* TODO: handle login */ },
+            onClick = { navController.navigate(Screen.Dashboard.route) },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = PLNBlue)
         ) {
