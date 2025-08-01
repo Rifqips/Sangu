@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,10 +27,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import id.application.sangugue.presentation.navigation.Screen
 import id.application.sangugue.ui.theme.PLNBlue
-import id.application.sangugue.ui.theme.PLNBlueDark
 import id.application.sangugue.ui.theme.White
 import id.application.sangugue.utils.Utils.SetSystemBarColor
 

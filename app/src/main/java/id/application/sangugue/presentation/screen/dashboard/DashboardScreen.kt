@@ -1,19 +1,27 @@
 package id.application.sangugue.presentation.screen.dashboard
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -28,54 +36,74 @@ import id.application.sangugue.utils.Utils.SetSystemBarColor
 fun DashboardScreen(navController: NavHostController) {
     SetSystemBarColor(color = White, darkIcons = true)
 
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Halo, Selamat Datang!",
-            style = MaterialTheme.typography.titleLarge,
-            color = PLNBlueDark
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Total Saldo Anda",
-            style = MaterialTheme.typography.bodyMedium,
-            color = GrayText
-        )
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            colors = CardDefaults.cardColors(containerColor = PLNBlueDark),
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(4.dp)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Rp 12.000.000",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White
-                )
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate("input_amount") },
+                containerColor = PLNBlueDark,
+                contentColor = Color.White,
+                shape = CircleShape,
+                modifier = Modifier
+                    .size(72.dp)
+                    .shadow(8.dp, CircleShape)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Tambah", modifier = Modifier.size(32.dp))
             }
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+        containerColor = Color.White
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Halo, Selamat Datang!",
+                style = MaterialTheme.typography.titleLarge,
+                color = PLNBlueDark
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Total Saldo Anda",
+                style = MaterialTheme.typography.bodyMedium,
+                color = GrayText
+            )
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = PLNBlueDark),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(4.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Rp 12.000.000",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.White
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Transaksi Terakhir",
+                style = MaterialTheme.typography.titleMedium,
+                color = PLNBlueDark
+            )
+
+            TransactionList(
+                transactions = sampleTransactions.take(5),
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Transaksi Terakhir",
-            style = MaterialTheme.typography.titleMedium,
-            color = PLNBlueDark
-        )
-
-        TransactionList(
-            transactions = sampleTransactions.take(5),
-            modifier = Modifier.padding(top = 8.dp)
-        )
     }
 }
+
