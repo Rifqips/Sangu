@@ -21,15 +21,24 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,13 +49,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import id.application.sangugue.R
+import id.application.sangugue.ui.theme.PLNBlue
+import id.application.sangugue.ui.theme.PLNBlueDark
+
 
 @Composable
 fun InputAmount(
     amount: String,
     category: String,
+    description: String,
     onAmountChange: (String) -> Unit,
-    onCategoryEdit: () -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onCategorySelected: (String) -> Unit,
     onInvestClick: () -> Unit,
     onKeypadPress: (String) -> Unit,
     navHostController: NavHostController
@@ -62,24 +76,40 @@ fun InputAmount(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        Text("How much do you want to save?", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Text("Masukkan Nominal?", fontWeight = FontWeight.Bold, fontSize = 20.sp)
         Spacer(modifier = Modifier.height(12.dp))
 
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
-                text = "$$amount",
+                text = "Rp. $amount",
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF3E5BF6)
+                color = PLNBlue
             )
             Text(".00", fontSize = 24.sp, color = Color.LightGray)
         }
 
-        Text("Set amount of the goal", color = Color.Gray, fontSize = 14.sp)
+        Text("jumlah yang ditentukan", color = Color.Gray, fontSize = 14.sp)
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        CategoryCard(category = category, onEdit = onCategoryEdit)
+        CategoryDropdownCard(
+            selectedCategory = category,
+            onCategorySelected = onCategorySelected
+        )
+
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = description,
+            onValueChange = onDescriptionChange,
+            label = { Text("Deskripsi (opsional)") },
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            singleLine = true
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -88,9 +118,9 @@ fun InputAmount(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3E5BF6))
+            colors = ButtonDefaults.buttonColors(containerColor = PLNBlue)
         ) {
-            Text("Invest in low risk fund", color = Color.White)
+            Text("Input Jumlah", color = Color.White)
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -98,6 +128,7 @@ fun InputAmount(
         CustomNumberPad(onKeyPress = onKeypadPress)
     }
 }
+
 
 @Composable
 fun TopAppBar(navHostController: NavHostController) {
@@ -119,27 +150,61 @@ fun TopAppBar(navHostController: NavHostController) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryCard(category: String, onEdit: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(Color(0xFFF1F4FF))
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+fun CategoryDropdownCard(
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit
+) {
+    val categories = listOf("Pemasukan", "Pengeluaran")
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_home),
-            contentDescription = null,
-            tint = Color(0xFF3E5BF6),
-            modifier = Modifier.size(40.dp)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(text = category, fontWeight = FontWeight.Medium, fontSize = 16.sp)
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(onClick = onEdit) {
-            Icon(Icons.Default.Edit, contentDescription = "Edit")
+        Row(
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(Color(0xFFF1F4FF))
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_management),
+                contentDescription = null,
+                tint = PLNBlue,
+                modifier = Modifier.size(40.dp),
+
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = selectedCategory,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = "Pilih Kategori"
+            )
+        }
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            categories.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(category) },
+                    onClick = {
+                        onCategorySelected(category)
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }

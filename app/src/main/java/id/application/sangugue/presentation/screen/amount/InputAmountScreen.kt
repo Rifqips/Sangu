@@ -1,5 +1,6 @@
 package id.application.sangugue.presentation.screen.amount
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,21 +12,27 @@ import androidx.navigation.NavHostController
 fun InputAmountScreen(navController: NavHostController) {
 
     var amount by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("New home") }
+    var category by remember { mutableStateOf("Pemasukan") }
+    var description by remember { mutableStateOf("") }
 
     InputAmount(
         amount = amount,
         category = category,
+        description = description,
         onAmountChange = { amount = it },
-        onCategoryEdit = { },
-        onInvestClick = {  },
-        navHostController = navController,
+        onCategorySelected = { category = it },
+        onDescriptionChange = { description = it },
+        onInvestClick = {
+            Log.d("Input", "Nominal: $amount, Kategori: $category, Deskripsi: $description")
+            // simpan ke database atau navigasi
+        },
         onKeypadPress = { key ->
-            when (key) {
-                "⌫" -> amount = amount.dropLast(1)
-                "." -> if (!amount.contains(".")) amount += "."
-                else -> amount += key
+            amount = when (key) {
+                "⌫" -> amount.dropLast(1)
+                "." -> if (!amount.contains(".")) amount + "." else amount
+                else -> amount + key
             }
-        }
+        },
+        navHostController = navController
     )
 }
