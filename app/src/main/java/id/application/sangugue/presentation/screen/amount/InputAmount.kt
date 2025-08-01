@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -56,10 +57,12 @@ import id.application.sangugue.ui.theme.PLNBlueDark
 @Composable
 fun InputAmount(
     amount: String,
+    option: String,
     category: String,
     description: String,
     onAmountChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
+    onOptionSelected: (String) -> Unit,
     onCategorySelected: (String) -> Unit,
     onInvestClick: () -> Unit,
     onKeypadPress: (String) -> Unit,
@@ -74,10 +77,8 @@ fun InputAmount(
     ) {
         TopAppBar(navHostController = navHostController)
 
-        Spacer(modifier = Modifier.height(32.dp))
 
-        Text("Masukkan Nominal?", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
@@ -91,13 +92,19 @@ fun InputAmount(
 
         Text("jumlah yang ditentukan", color = Color.Gray, fontSize = 14.sp)
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        CategoryDropdownCard(
+        OptionDropdownCard(
             selectedCategory = category,
             onCategorySelected = onCategorySelected
         )
 
+        Spacer(modifier = Modifier.height(10.dp))
+
+        CategoryDropdownCard(
+            selectedCategory = option,
+            onCategorySelected = onOptionSelected
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -132,17 +139,21 @@ fun InputAmount(
 
 @Composable
 fun TopAppBar(navHostController: NavHostController) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(WindowInsets.statusBars.asPaddingValues())
+            .height(56.dp),
+        contentAlignment = Alignment.Center
     ) {
+        Text("Masukkan Nominal", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+
         Icon(
             imageVector = Icons.Default.ArrowBack,
             contentDescription = "Kembali",
             tint = Color.Black,
             modifier = Modifier
+                .align(Alignment.CenterStart)
                 .size(28.dp)
                 .clickable { navHostController.popBackStack() }
         )
@@ -150,9 +161,10 @@ fun TopAppBar(navHostController: NavHostController) {
 }
 
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryDropdownCard(
+fun OptionDropdownCard(
     selectedCategory: String,
     onCategorySelected: (String) -> Unit
 ) {
@@ -189,6 +201,67 @@ fun CategoryDropdownCard(
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = "Pilih Kategori"
+            )
+        }
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            categories.forEach { category ->
+                DropdownMenuItem(
+                    text = { Text(category) },
+                    onClick = {
+                        onCategorySelected(category)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryDropdownCard(
+    selectedCategory: String,
+    onCategorySelected: (String) -> Unit
+) {
+    val categories = listOf("Gaji", "Freelance", "Bayar Listrik")
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+    ) {
+        Row(
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(Color(0xFFF1F4FF))
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_option),
+                contentDescription = null,
+                tint = PLNBlue,
+                modifier = Modifier.size(40.dp),
+
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = selectedCategory,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = "Pilih Opsi"
             )
         }
 
