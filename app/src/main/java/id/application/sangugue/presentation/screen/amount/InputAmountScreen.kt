@@ -19,6 +19,7 @@ fun InputAmountScreen(navController: NavHostController) {
         onAmountChange = { amount = it },
         onCategoryEdit = { },
         onInvestClick = {  },
+        navHostController = navController,
         onKeypadPress = { key ->
             when (key) {
                 "⌫" -> amount = amount.dropLast(1)

@@ -3,6 +3,7 @@ package id.application.sangugue.presentation.screen.amount
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import id.application.sangugue.R
 
 @Composable
@@ -46,7 +48,8 @@ fun InputAmount(
     onAmountChange: (String) -> Unit,
     onCategoryEdit: () -> Unit,
     onInvestClick: () -> Unit,
-    onKeypadPress: (String) -> Unit
+    onKeypadPress: (String) -> Unit,
+    navHostController: NavHostController
 ) {
     Column(
         modifier = Modifier
@@ -55,18 +58,7 @@ fun InputAmount(
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopAppBar()
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LinearProgressIndicator(
-            progress = 0.33f,
-            modifier = Modifier
-                .width(80.dp)
-                .height(4.dp)
-                .clip(RoundedCornerShape(2.dp)),
-            color = Color(0xFF3E5BF6),
-            trackColor = Color(0xFFE0E0E0)
-        )
+        TopAppBar(navHostController = navHostController)
 
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -108,7 +100,7 @@ fun InputAmount(
 }
 
 @Composable
-fun TopAppBar() {
+fun TopAppBar(navHostController: NavHostController) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -119,7 +111,9 @@ fun TopAppBar() {
             imageVector = Icons.Default.ArrowBack,
             contentDescription = "Kembali",
             tint = Color.Black,
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier
+                .size(28.dp)
+                .clickable { navHostController.popBackStack() }
         )
     }
 }
