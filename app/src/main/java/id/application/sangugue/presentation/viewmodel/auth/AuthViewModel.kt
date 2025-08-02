@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import id.application.sangugue.data.local.datastore.ApplicationPreferences
 import id.application.sangugue.data.model.auth.RequestLoginItem
 import id.application.sangugue.data.repository.auth.AuthRepository
 import kotlinx.coroutines.launch
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: AuthRepository
+    private val repository: AuthRepository,
+    private val prefs : ApplicationPreferences
 ) : ViewModel() {
 
     var authState by mutableStateOf<AuthUiState>(AuthUiState.Idle)
@@ -26,7 +28,8 @@ class AuthViewModel @Inject constructor(
                 val response = repository.login(request)
                 if (response.isSuccessful) {
                     val data = response.body()
-                    // bisa simpan token atau id pengguna jika perlu
+                    val token = data?.data?.accessToken.orEmpty()
+                    prefs.saveToken(token)
                     authState = AuthUiState.Success(data?.message ?: "Login berhasil")
                 } else {
                     authState = AuthUiState.Error("Login gagal: ${response.message()}")

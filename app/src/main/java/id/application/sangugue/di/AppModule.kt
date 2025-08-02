@@ -7,7 +7,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import id.application.sangugue.data.local.datastore.ApplicationPreferences
 import id.application.sangugue.data.remote.ApiService
+import id.application.sangugue.data.remote.AuthInterceptor
 import id.application.sangugue.data.repository.auth.AuthRepository
 import id.application.sangugue.data.repository.auth.AuthRepositoryImpl
 import okhttp3.OkHttpClient
@@ -33,9 +35,19 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(chuckerInterceptor: ChuckerInterceptor): OkHttpClient {
+    fun provideAuthInterceptor(userPreferences: ApplicationPreferences): AuthInterceptor {
+        return AuthInterceptor(userPreferences)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(
+        chucker: ChuckerInterceptor,
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(chuckerInterceptor)
+            .addInterceptor(chucker)
+            .addInterceptor(authInterceptor) // <--- Tambahkan AuthInterceptor
             .build()
     }
 
@@ -51,6 +63,13 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideUserPreferences(@ApplicationContext context: Context): ApplicationPreferences {
+        return ApplicationPreferences(context)
     }
 
     @Provides
