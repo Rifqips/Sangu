@@ -1,11 +1,21 @@
 package id.application.sangugue.data.remote
 
-import id.application.sangugue.data.model.auth.UserDto
-import retrofit2.http.GET
+import id.application.sangugue.data.model.auth.RequestLoginItem
+import id.application.sangugue.data.model.auth.ResponseLoginItem
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.POST
 
 interface ApiService {
 
-    @GET("users")
-    suspend fun loginUser(): List<UserDto>
+    @POST("auth/login")
+    suspend fun loginUser(
+        @Body request : RequestLoginItem
+    ): Response<ResponseLoginItem>
+
+    @POST("auth/register")
+    suspend fun registerUser(
+        @Body request : RequestLoginItem
+    ): Response<ResponseLoginItem>
 
 }

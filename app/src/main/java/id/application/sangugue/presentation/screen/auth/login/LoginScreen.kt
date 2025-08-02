@@ -7,13 +7,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,19 +29,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import id.application.sangugue.data.model.auth.RequestLoginItem
 import id.application.sangugue.presentation.navigation.Screen
+import id.application.sangugue.presentation.viewmodel.auth.AuthUiState
+import id.application.sangugue.presentation.viewmodel.auth.AuthViewModel
 import id.application.sangugue.ui.theme.PLNBlue
 import id.application.sangugue.ui.theme.White
 import id.application.sangugue.utils.Utils.SetSystemBarColor
-
 @Composable
-fun LoginScreen(navController: NavHostController) {
 
+fun LoginScreen(
+    navController: NavHostController,
+    viewModel: AuthViewModel = hiltViewModel()
+) {
     SetSystemBarColor(color = White, darkIcons = true)
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val authState = viewModel.authState
+
+    // Navigasi ke dashboard setelah login sukses
+    LaunchedEffect(authState) {
+        if (authState is AuthUiState.Success) {
+            navController.navigate(Screen.Dashboard.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+            viewModel.resetState()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -53,13 +74,8 @@ fun LoginScreen(navController: NavHostController) {
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text(text = "Email",style = TextStyle(color = Color.Gray)) },
-            placeholder = {
-                Text(
-                    text = "Masukkan email kamu",
-                    style = TextStyle(color = Color.Gray)
-                )
-            },
+            label = { Text(text = "Email", style = TextStyle(color = Color.Gray)) },
+            placeholder = { Text("Masukkan email kamu", style = TextStyle(color = Color.Gray)) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
@@ -79,13 +95,8 @@ fun LoginScreen(navController: NavHostController) {
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text(text = "Password",style = TextStyle(color = Color.Gray)) },
-            placeholder = {
-                Text(
-                    text = "Masukkan password kamu",
-                    style = TextStyle(color = Color.Gray)
-                )
-            },
+            label = { Text(text = "Password", style = TextStyle(color = Color.Gray)) },
+            placeholder = { Text("Masukkan password kamu", style = TextStyle(color = Color.Gray)) },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
@@ -104,11 +115,32 @@ fun LoginScreen(navController: NavHostController) {
         Spacer(Modifier.height(24.dp))
 
         Button(
-            onClick = { navController.navigate(Screen.Dashboard.route) },
+            onClick = {
+                val request = RequestLoginItem(email = email, password = password)
+                viewModel.loginUser(request)
+            },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = PLNBlue)
         ) {
-            Text("Login", color = White)
+            if (authState is AuthUiState.Loading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text("Login", color = White)
+            }
+        }
+
+        // Tampilkan pesan error kalau ada
+        if (authState is AuthUiState.Error) {
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = authState.message,
+                color = Color.Red,
+                fontSize = 14.sp
+            )
         }
 
         Spacer(Modifier.height(16.dp))
