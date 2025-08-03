@@ -10,8 +10,6 @@ import dagger.hilt.components.SingletonComponent
 import id.application.data.local.datastore.ApplicationPreferences
 import id.application.data.remote.api.ApiService
 import id.application.data.remote.api.AuthInterceptor
-import id.application.data.repository.AuthRepositoryImpl
-import id.application.domain.repository.auth.AuthRepository
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

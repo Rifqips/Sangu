@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import id.application.data.local.datastore.ApplicationPreferences
 import id.application.domain.model.auth.LoginRequest
-import id.application.domain.repository.auth.AuthRepository
+import id.application.domain.repository.AuthRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

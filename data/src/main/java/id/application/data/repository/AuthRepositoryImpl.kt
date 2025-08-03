@@ -6,7 +6,7 @@ import id.application.data.remote.model.auth.toDto
 import id.application.domain.model.auth.LoginRequest
 import id.application.domain.model.auth.LoginResponse
 import id.application.domain.model.auth.RegisterResponse
-import id.application.domain.repository.auth.AuthRepository
+import id.application.domain.repository.AuthRepository
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(

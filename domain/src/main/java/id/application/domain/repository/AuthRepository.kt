@@ -1,4 +1,4 @@
-package id.application.domain.repository.auth
+package id.application.domain.repository
 
 import id.application.domain.model.auth.LoginRequest
 import id.application.domain.model.auth.LoginResponse
