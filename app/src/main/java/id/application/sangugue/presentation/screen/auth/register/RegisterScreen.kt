@@ -25,19 +25,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import id.application.sangugue.data.model.auth.RequestLoginItem
 import id.application.sangugue.presentation.viewmodel.auth.AuthUiState
 import id.application.sangugue.presentation.viewmodel.auth.AuthViewModel
-import id.application.sangugue.ui.theme.PLNBlue
-import id.application.sangugue.ui.theme.White
-import id.application.sangugue.utils.Utils.SetSystemBarColor
+import id.appliation.core.theme.PLNBlue
+import id.appliation.core.theme.White
+import id.application.domain.model.auth.LoginRequest
 
 
 @Composable
@@ -45,8 +43,6 @@ fun RegisterScreen(
     navController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    SetSystemBarColor(color = White, darkIcons = true)
-
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val state = viewModel.authState
@@ -114,7 +110,10 @@ fun RegisterScreen(
 
         Button(
             onClick = {
-                val request = RequestLoginItem(email = email, password = password)
+                val request = LoginRequest(
+                    email = email,
+                    password = password
+                )
                 viewModel.registerUser(request)
             },
             modifier = Modifier.fillMaxWidth(),

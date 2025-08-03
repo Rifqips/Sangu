@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.compose.compiler)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.ksp)
 }
@@ -43,19 +43,15 @@ android {
 
 
 dependencies {
+    implementation(project(":di"))
+    implementation(project(":core"))
+    implementation(project(":data"))
+    implementation(project(":domain"))
+
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-
-    // Compose
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.material3)
-    implementation(libs.material3)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.accompanist.systemuicontroller)
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
@@ -68,10 +64,6 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
-    // Networking
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
-    implementation(libs.okhttp.logging.interceptor)
 
     // Testing
     testImplementation(libs.junit)
@@ -79,11 +71,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-
-    debugImplementation(libs.library)
-    releaseImplementation(libs.library.no.op)
-
-    implementation(libs.androidx.datastore.preferences)
-
 
 }

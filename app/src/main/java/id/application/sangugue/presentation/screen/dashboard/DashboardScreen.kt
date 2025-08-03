@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -39,18 +38,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import id.application.sangugue.data.model.transaction.TransactionList
-import id.application.sangugue.data.model.transaction.sampleTransactions
-import id.application.sangugue.ui.theme.GrayText
-import id.application.sangugue.ui.theme.PLNBlueDark
-import id.application.sangugue.ui.theme.White
-import id.application.sangugue.utils.Utils.SetSystemBarColor
-import id.application.sangugue.utils.Utils.formatCurrency
+import id.application.sangugue.presentation.screen.amount.TransactionList
+import id.application.sangugue.presentation.screen.amount.sampleTransactions
+import id.appliation.core.utils.Utils.formatCurrency
 
 @Composable
 fun DashboardScreen(navController: NavHostController) {
-    SetSystemBarColor(color = White, darkIcons = true)
-
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     val totalSaldo = 12_000_000
@@ -84,7 +77,7 @@ fun DashboardScreen(navController: NavHostController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate("input_amount") },
-                containerColor = PLNBlueDark,
+                containerColor = id.appliation.core.theme.PLNBlueDark,
                 contentColor = Color.White,
                 shape = CircleShape,
                 modifier = Modifier
@@ -114,12 +107,12 @@ fun DashboardScreen(navController: NavHostController) {
                     Text(
                         text = "Halo, Selamat Datang!",
                         style = MaterialTheme.typography.titleLarge,
-                        color = PLNBlueDark
+                        color = id.appliation.core.theme.PLNBlueDark
                     )
                     Text(
                         text = "Rifqi Padi Siliwangi",
                         style = MaterialTheme.typography.titleMedium,
-                        color = GrayText
+                        color = id.appliation.core.theme.GrayText
                     )
                 }
 
@@ -137,7 +130,7 @@ fun DashboardScreen(navController: NavHostController) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Box(modifier = Modifier.weight(1f)) {
-                    InfoCard(title = "Saldo", amount = totalSaldo, backgroundColor = PLNBlueDark)
+                    InfoCard(title = "Saldo", amount = totalSaldo, backgroundColor = id.appliation.core.theme.PLNBlueDark)
                 }
                 Box(modifier = Modifier.weight(1f)) {
                     InfoCard(title = "Pemasukan", amount = totalPemasukan, backgroundColor = Color(0xFF4CAF50))
@@ -152,11 +145,13 @@ fun DashboardScreen(navController: NavHostController) {
             Text(
                 text = "Transaksi Terakhir",
                 style = MaterialTheme.typography.titleMedium,
-                color = PLNBlueDark
+                color = id.appliation.core.theme.PLNBlueDark
             )
 
             TransactionList(
-                transactions = sampleTransactions.take(5),
+                transactions = sampleTransactions.take(
+                    5
+                ),
                 modifier = Modifier.padding(top = 8.dp)
             )
         }

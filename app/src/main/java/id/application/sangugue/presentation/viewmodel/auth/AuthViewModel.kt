@@ -6,53 +6,42 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import id.application.sangugue.data.local.datastore.ApplicationPreferences
-import id.application.sangugue.data.model.auth.RequestLoginItem
-import id.application.sangugue.data.repository.auth.AuthRepository
+import id.application.data.local.datastore.ApplicationPreferences
+import id.application.domain.model.auth.LoginRequest
+import id.application.domain.repository.auth.AuthRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: AuthRepository,
-    private val prefs : ApplicationPreferences
+    private val prefs: ApplicationPreferences
 ) : ViewModel() {
 
     var authState by mutableStateOf<AuthUiState>(AuthUiState.Idle)
         private set
 
-    fun loginUser(request: RequestLoginItem) {
+    fun loginUser(request: LoginRequest) {
         viewModelScope.launch {
             authState = AuthUiState.Loading
             try {
                 val response = repository.login(request)
-                if (response.isSuccessful) {
-                    val data = response.body()
-                    val token = data?.data?.accessToken.orEmpty()
-                    prefs.saveToken(token)
-                    authState = AuthUiState.Success(data?.message ?: "Login berhasil")
-                } else {
-                    authState = AuthUiState.Error("Login gagal: ${response.message()}")
-                }
+                prefs.saveToken(response.token)
+                authState = AuthUiState.Success(response.message)
             } catch (e: Exception) {
-                authState = AuthUiState.Error("Terjadi kesalahan: ${e.localizedMessage}")
+                authState = AuthUiState.Error("Login gagal: ${e.localizedMessage}")
             }
         }
     }
 
-    fun registerUser(request: RequestLoginItem) {
+    fun registerUser(request: LoginRequest) {
         viewModelScope.launch {
             authState = AuthUiState.Loading
             try {
                 val response = repository.register(request)
-                if (response.isSuccessful) {
-                    val data = response.body()
-                    authState = AuthUiState.Success(data?.message ?: "Registrasi berhasil")
-                } else {
-                    authState = AuthUiState.Error("Registrasi gagal: ${response.message()}")
-                }
+                authState = AuthUiState.Success(response.message)
             } catch (e: Exception) {
-                authState = AuthUiState.Error("Terjadi kesalahan: ${e.localizedMessage}")
+                authState = AuthUiState.Error("Registrasi gagal: ${e.localizedMessage}")
             }
         }
     }
@@ -61,6 +50,7 @@ class AuthViewModel @Inject constructor(
         authState = AuthUiState.Idle
     }
 }
+
 
 sealed class AuthUiState {
     object Idle : AuthUiState()

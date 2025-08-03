@@ -23,15 +23,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -49,9 +46,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import id.appliation.core.theme.PLNBlue
 import id.application.sangugue.R
-import id.application.sangugue.ui.theme.PLNBlue
-import id.application.sangugue.ui.theme.PLNBlueDark
 
 
 @Composable
@@ -187,7 +183,7 @@ fun OptionDropdownCard(
             Icon(
                 painter = painterResource(id = R.drawable.ic_management),
                 contentDescription = null,
-                tint = PLNBlue,
+                tint = id.appliation.core.theme.PLNBlue,
                 modifier = Modifier.size(40.dp),
 
             )
@@ -248,7 +244,7 @@ fun CategoryDropdownCard(
             Icon(
                 painter = painterResource(id = R.drawable.ic_option),
                 contentDescription = null,
-                tint = PLNBlue,
+                tint = id.appliation.core.theme.PLNBlue,
                 modifier = Modifier.size(40.dp),
 
             )

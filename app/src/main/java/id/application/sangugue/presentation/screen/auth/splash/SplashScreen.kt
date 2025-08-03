@@ -21,14 +21,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import id.application.sangugue.R
 import id.application.sangugue.presentation.navigation.Screen
-import id.application.sangugue.ui.theme.PLNBlueDark
-import id.application.sangugue.ui.theme.White
-import id.application.sangugue.utils.Utils.SetSystemBarColor
 import kotlinx.coroutines.delay
 
 @Composable
+
 fun SplashScreen(navController: NavHostController) {
-    SetSystemBarColor(color = White, darkIcons = false)
     LaunchedEffect(Unit) {
         delay(2000)
         navController.navigate(Screen.Login.route) {
@@ -39,7 +36,7 @@ fun SplashScreen(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(PLNBlueDark),
+            .background(id.appliation.core.theme.PLNBlueDark),
         contentAlignment = Alignment.Center
     ) {
         Column(

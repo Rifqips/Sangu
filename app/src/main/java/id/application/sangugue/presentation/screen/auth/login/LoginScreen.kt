@@ -31,20 +31,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import id.application.sangugue.data.model.auth.RequestLoginItem
 import id.application.sangugue.presentation.navigation.Screen
 import id.application.sangugue.presentation.viewmodel.auth.AuthUiState
 import id.application.sangugue.presentation.viewmodel.auth.AuthViewModel
-import id.application.sangugue.ui.theme.PLNBlue
-import id.application.sangugue.ui.theme.White
-import id.application.sangugue.utils.Utils.SetSystemBarColor
+import id.appliation.core.theme.PLNBlue
+import id.appliation.core.theme.White
+import id.application.domain.model.auth.LoginRequest
+
 @Composable
 
 fun LoginScreen(
     navController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    SetSystemBarColor(color = White, darkIcons = true)
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -116,7 +115,10 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                val request = RequestLoginItem(email = email, password = password)
+                val request = LoginRequest(
+                    email = email,
+                    password = password
+                )
                 viewModel.loginUser(request)
             },
             modifier = Modifier.fillMaxWidth(),
@@ -133,7 +135,6 @@ fun LoginScreen(
             }
         }
 
-        // Tampilkan pesan error kalau ada
         if (authState is AuthUiState.Error) {
             Spacer(Modifier.height(16.dp))
             Text(
