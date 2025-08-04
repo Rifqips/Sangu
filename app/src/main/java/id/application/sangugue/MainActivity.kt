@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import id.application.sangugue.presentation.navigation.AppNavGraph
 import id.appliation.core.theme.SanguTheme
+import id.application.sangugue.presentation.navigation.AppNavGraph
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

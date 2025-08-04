@@ -1,8 +1,8 @@
 package id.application.data.remote.model.category
 
 
-import com.google.gson.annotations.SerializedName
 import androidx.annotation.Keep
+import com.google.gson.annotations.SerializedName
 
 @Keep
 data class ResponseAllCategoryItem(

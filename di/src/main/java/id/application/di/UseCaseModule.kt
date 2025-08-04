@@ -6,9 +6,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import id.application.domain.repository.AuthRepository
 import id.application.domain.repository.CategoryRepository
+import id.application.domain.repository.TransactionRepository
 import id.application.domain.usecase.auth.LoginUseCase
 import id.application.domain.usecase.auth.RegisterUseCase
 import id.application.domain.usecase.category.GetCategoriesUseCase
+import id.application.domain.usecase.transaction.CreateTransactionUseCase
 import javax.inject.Singleton
 
 @Module
@@ -31,5 +33,11 @@ object UseCaseModule {
     @Singleton
     fun provideGetCategoryUseCase(repository: CategoryRepository): GetCategoriesUseCase {
         return GetCategoriesUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreateTransaction(repository: TransactionRepository) : CreateTransactionUseCase{
+        return  CreateTransactionUseCase(repository)
     }
 }

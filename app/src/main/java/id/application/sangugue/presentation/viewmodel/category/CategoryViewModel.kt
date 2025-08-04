@@ -1,4 +1,4 @@
-package id.application.sangugue.presentation.viewmodel.transaction
+package id.application.sangugue.presentation.viewmodel.category
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

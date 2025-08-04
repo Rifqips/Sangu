@@ -38,9 +38,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import id.appliation.core.utils.Utils.formatCurrency
 import id.application.sangugue.presentation.screen.amount.TransactionList
 import id.application.sangugue.presentation.screen.amount.sampleTransactions
-import id.appliation.core.utils.Utils.formatCurrency
 
 @Composable
 fun DashboardScreen(navController: NavHostController) {

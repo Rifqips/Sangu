@@ -10,7 +10,7 @@ import id.appliation.core.utils.UiState
 import id.application.data.local.datastore.ApplicationPreferences
 import id.application.domain.model.auth.LoginRequest
 import id.application.domain.model.auth.LoginResponse
-import id.application.domain.repository.AuthRepository
+import id.application.domain.model.auth.RegisterRequest
 import id.application.domain.usecase.auth.LoginUseCase
 import id.application.domain.usecase.auth.RegisterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,7 +54,7 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun registerUser(request: LoginRequest) {
+    fun registerUser(request: RegisterRequest) {
         viewModelScope.launch {
             authState = UiState.Loading
             try {

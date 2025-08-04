@@ -33,12 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import id.application.sangugue.presentation.viewmodel.auth.AuthViewModel
 import id.appliation.core.theme.PLNBlue
 import id.appliation.core.theme.White
 import id.appliation.core.utils.UiState
-import id.application.domain.model.auth.LoginRequest
-import id.application.sangugue.presentation.navigation.Screen
+import id.application.domain.model.auth.RegisterRequest
+import id.application.sangugue.presentation.viewmodel.auth.AuthViewModel
 
 
 @Composable
@@ -50,6 +49,7 @@ fun RegisterScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     val state = viewModel.authState
 
     LaunchedEffect(state) {
@@ -116,13 +116,38 @@ fun RegisterScreen(
                 cursorColor = Color.Blue
             )
         )
+
+        Spacer(Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = { Text("Konfirmasi Password", color = Color.Gray) },
+            placeholder = { Text("Konfirmasi password kamu", color = Color.Gray) },
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                focusedPlaceholderColor = Color.Gray,
+                unfocusedPlaceholderColor = Color.Gray,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Gray,
+                unfocusedIndicatorColor = Color.LightGray,
+                cursorColor = Color.Blue
+            )
+        )
+
         Spacer(Modifier.height(24.dp))
 
         Button(
             onClick = {
-                val request = LoginRequest(
+                val request = RegisterRequest(
                     email = email,
-                    password = password
+                    password = password,
+                    confirmPassword = confirmPassword
                 )
                 viewModel.registerUser(request)
             },

@@ -1,7 +1,9 @@
 package id.application.sangugue.presentation.screen.amount
 
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +30,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -55,11 +58,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import id.appliation.core.theme.PLNBlue
 import id.appliation.core.utils.UiState
+import id.appliation.core.utils.Utils.formatRupiah
 import id.application.domain.model.category.Category
 import id.application.sangugue.R
-import id.application.sangugue.presentation.viewmodel.auth.AuthViewModel
-import id.application.sangugue.presentation.viewmodel.transaction.CategoryViewModel
+import id.application.sangugue.presentation.screen.customview.DatePickerCard
+import id.application.sangugue.presentation.viewmodel.category.CategoryViewModel
+import id.application.sangugue.presentation.viewmodel.transaction.TransactionViewModel
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun InputAmount(
     amount: String,
@@ -72,6 +79,9 @@ fun InputAmount(
     onCategorySelected: (String) -> Unit,
     onInvestClick: () -> Unit,
     onKeypadPress: (String) -> Unit,
+    date: LocalDate,
+    onDateClick: () -> Unit,
+    viewModel: TransactionViewModel = hiltViewModel(),
     navHostController: NavHostController
 ) {
     Column(
@@ -88,12 +98,11 @@ fun InputAmount(
 
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
-                text = "Rp. $amount",
+                text = formatRupiah(amount),
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 color = PLNBlue
             )
-            Text(".00", fontSize = 24.sp, color = Color.LightGray)
         }
 
         Text("jumlah yang ditentukan", color = Color.Gray, fontSize = 14.sp)
@@ -114,6 +123,14 @@ fun InputAmount(
 
         Spacer(modifier = Modifier.height(12.dp))
 
+
+        DatePickerCard(
+            date = date,
+            onClick = onDateClick
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         OutlinedTextField(
             value = description,
             onValueChange = onDescriptionChange,
@@ -123,7 +140,9 @@ fun InputAmount(
             singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+
+        val transactionStare = viewModel.transactionState
 
         Button(
             onClick = onInvestClick,
@@ -132,12 +151,23 @@ fun InputAmount(
                 .height(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PLNBlue)
         ) {
-            Text("Input Jumlah", color = Color.White)
+            if (transactionStare is UiState.Loading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text("Kirim Report", color = Color.White)
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         CustomNumberPad(onKeyPress = onKeypadPress)
+
+        Spacer(modifier = Modifier.height(10.dp))
+
     }
 }
 
@@ -244,7 +274,6 @@ fun CategoryDropdownCard(
         viewModel.fetchCategories()
     }
 
-    // Extract categories from success state
     val categories = when (categoryState) {
         is UiState.Success<*> -> (categoryState as UiState.Success<List<Category>>).data ?: emptyList()
         else -> emptyList()
@@ -298,7 +327,6 @@ fun CategoryDropdownCard(
         }
     }
 
-    // Optional: Show error toast or loading indicator
     if (categoryState is UiState.Error) {
         val context = LocalContext.current
         LaunchedEffect(categoryState) {
@@ -307,6 +335,16 @@ fun CategoryDropdownCard(
         }
     }
 }
+
+
+fun handleKeypadPress(amount: String, key: String): String {
+    return when (key) {
+        "⌫" -> amount.dropLast(1)
+        "." -> if (!amount.contains(".")) amount + "." else amount
+        else -> amount + key
+    }
+}
+
 
 
 @Composable

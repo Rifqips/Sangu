@@ -12,7 +12,13 @@ data class LoginResponse(
     val success: Boolean
 )
 
-data class RegisterResponse(
+data class RegisterRequest(
+    val email: String,
+    val password: String,
+    val confirmPassword: String
+)
+
+data class BasicResponse(
     val message: String,
     val success: Boolean
 )

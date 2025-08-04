@@ -1,5 +1,6 @@
 package id.application.domain.model.transaction
 
+
 data class TransactionSummary(
     val balance: Int,
     val expense: Int,
@@ -9,4 +10,12 @@ data class TransactionSummary(
 data class TransactionHistoryData(
     val detailsJson: String?,
     val summary: TransactionSummary
+)
+
+data class ItemRequestTransaction(
+    val amount: Int? = null,
+    val category: String? = null,
+    val description: String? = null,
+    val transactionDate: String? = null,
+    val type: String? = null
 )

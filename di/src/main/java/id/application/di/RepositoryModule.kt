@@ -8,8 +8,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import id.application.data.repository.AuthRepositoryImpl
 import id.application.data.repository.CategoryRepositoryImpl
+import id.application.data.repository.TransactionRepositoryImpl
 import id.application.domain.repository.AuthRepository
 import id.application.domain.repository.CategoryRepository
+import id.application.domain.repository.TransactionRepository
 import javax.inject.Singleton
 
 @Module
@@ -27,4 +29,11 @@ abstract class RepositoryModule {
     abstract fun bindCategoryRepository(
         impl: CategoryRepositoryImpl
     ): CategoryRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTransactionRepository(
+        impl: TransactionRepositoryImpl
+    ) : TransactionRepository
+
 }
