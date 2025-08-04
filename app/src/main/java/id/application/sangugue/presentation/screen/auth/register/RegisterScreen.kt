@@ -1,6 +1,7 @@
 package id.application.sangugue.presentation.screen.auth.register
 
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -36,6 +38,7 @@ import id.appliation.core.theme.PLNBlue
 import id.appliation.core.theme.White
 import id.appliation.core.utils.UiState
 import id.application.domain.model.auth.LoginRequest
+import id.application.sangugue.presentation.navigation.Screen
 
 
 @Composable
@@ -43,15 +46,22 @@ fun RegisterScreen(
     navController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val state = viewModel.authState
 
-    // Navigasi balik ke Login jika sukses
     LaunchedEffect(state) {
-        if (state is UiState.Success) {
-            navController.popBackStack()
-            viewModel.resetState()
+        when (val state = state) {
+            is UiState.Success<*> -> {
+                navController.popBackStack()
+                viewModel.resetState()
+            }
+            is UiState.Error -> {
+                Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            }
+            else -> Unit
         }
     }
 

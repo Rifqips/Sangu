@@ -12,8 +12,8 @@ import androidx.navigation.NavHostController
 fun InputAmountScreen(navController: NavHostController) {
 
     var amount by remember { mutableStateOf("") }
-    var option by remember { mutableStateOf("Jenis") }
     var category by remember { mutableStateOf("Pemasukan") }
+    var option by remember { mutableStateOf("Jenis") }
     var description by remember { mutableStateOf("") }
 
     InputAmount(

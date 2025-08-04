@@ -1,5 +1,6 @@
 package id.application.sangugue.presentation.screen.auth.login
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -44,21 +46,27 @@ fun LoginScreen(
     navController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     val authState = viewModel.authState
 
-    // Navigasi ke dashboard setelah login sukses
     LaunchedEffect(authState) {
-        if (authState is UiState.Success) {
-            navController.navigate(Screen.Dashboard.route) {
-                popUpTo(Screen.Login.route) { inclusive = true }
+        when (val state = authState) {
+            is UiState.Success<*> -> {
+                navController.navigate(Screen.Dashboard.route) {
+                    popUpTo(Screen.Login.route) { inclusive = true }
+                }
+                viewModel.resetState()
             }
-            viewModel.resetState()
+            is UiState.Error -> {
+                Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            }
+            else -> Unit
         }
     }
+
 
     Column(
         modifier = Modifier

@@ -1,12 +1,13 @@
 package id.application.data.remote.api
 
+import id.application.data.local.datastore.ApplicationPreferences
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 
 class AuthInterceptor(
-    private val userPreferences: id.application.data.local.datastore.ApplicationPreferences
+    private val userPreferences: ApplicationPreferences
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {

@@ -1,6 +1,7 @@
 package id.application.sangugue.presentation.screen.amount
 
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,8 +19,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -33,6 +36,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,14 +46,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import id.appliation.core.theme.PLNBlue
+import id.appliation.core.utils.UiState
+import id.application.domain.model.category.Category
 import id.application.sangugue.R
-
+import id.application.sangugue.presentation.viewmodel.auth.AuthViewModel
+import id.application.sangugue.presentation.viewmodel.transaction.CategoryViewModel
 
 @Composable
 fun InputAmount(
@@ -68,11 +78,11 @@ fun InputAmount(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         TopAppBar(navHostController = navHostController)
-
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -108,8 +118,7 @@ fun InputAmount(
             value = description,
             onValueChange = onDescriptionChange,
             label = { Text("Deskripsi (opsional)") },
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             singleLine = true
         )
@@ -131,6 +140,7 @@ fun InputAmount(
         CustomNumberPad(onKeyPress = onKeypadPress)
     }
 }
+
 
 
 @Composable
@@ -183,7 +193,7 @@ fun OptionDropdownCard(
             Icon(
                 painter = painterResource(id = R.drawable.ic_management),
                 contentDescription = null,
-                tint = id.appliation.core.theme.PLNBlue,
+                tint = PLNBlue,
                 modifier = Modifier.size(40.dp),
 
             )
@@ -223,10 +233,22 @@ fun OptionDropdownCard(
 @Composable
 fun CategoryDropdownCard(
     selectedCategory: String,
+    viewModel: CategoryViewModel = hiltViewModel(),
     onCategorySelected: (String) -> Unit
 ) {
-    val categories = listOf("Gaji", "Freelance", "Bayar Listrik")
+    val categoryState by viewModel.categoryState.collectAsState()
+
     var expanded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchCategories()
+    }
+
+    // Extract categories from success state
+    val categories = when (categoryState) {
+        is UiState.Success<*> -> (categoryState as UiState.Success<List<Category>>).data ?: emptyList()
+        else -> emptyList()
+    }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -244,13 +266,12 @@ fun CategoryDropdownCard(
             Icon(
                 painter = painterResource(id = R.drawable.ic_option),
                 contentDescription = null,
-                tint = id.appliation.core.theme.PLNBlue,
+                tint = PLNBlue,
                 modifier = Modifier.size(40.dp),
-
             )
             Spacer(modifier = Modifier.width(12.dp))
             Text(
-                text = selectedCategory,
+                text = selectedCategory.ifEmpty { "Pilih Kategori" },
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp
             )
@@ -267,16 +288,26 @@ fun CategoryDropdownCard(
         ) {
             categories.forEach { category ->
                 DropdownMenuItem(
-                    text = { Text(category) },
+                    text = { Text(category.name) },
                     onClick = {
-                        onCategorySelected(category)
+                        onCategorySelected(category.name)
                         expanded = false
                     }
                 )
             }
         }
     }
+
+    // Optional: Show error toast or loading indicator
+    if (categoryState is UiState.Error) {
+        val context = LocalContext.current
+        LaunchedEffect(categoryState) {
+            val message = (categoryState as UiState.Error).message
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 }
+
 
 @Composable
 fun CustomNumberPad(onKeyPress: (String) -> Unit) {

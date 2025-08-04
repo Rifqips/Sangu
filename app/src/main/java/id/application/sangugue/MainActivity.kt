@@ -10,7 +10,6 @@ import id.application.sangugue.presentation.navigation.AppNavGraph
 import id.appliation.core.theme.SanguTheme
 
 @AndroidEntryPoint
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

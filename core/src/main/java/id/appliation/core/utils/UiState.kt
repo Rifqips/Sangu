@@ -1,9 +1,9 @@
 package id.appliation.core.utils
 
 
-sealed class UiState {
-    object Idle : UiState()
-    object Loading : UiState()
-    data class Success(val message: String) : UiState()
-    data class Error(val message: String) : UiState()
+sealed class UiState<out T> {
+    object Idle : UiState<Nothing>()
+    object Loading : UiState<Nothing>()
+    data class Success<T>(val data: T?, val message: String = "") : UiState<T>()
+    data class Error(val message: String) : UiState<Nothing>()
 }
