@@ -6,7 +6,7 @@ import id.application.data.remote.model.auth.ResponseLoginItem
 import id.application.data.remote.model.basic.ResponseBasicItem
 import id.application.data.remote.model.category.ResponseAllCategoryItem
 import id.application.data.remote.model.transaction.RequestTransactionItem
-import id.application.data.remote.model.transaction.ResponseTransactionHistoryItem
+import id.application.data.remote.model.transaction.ResponseTransactionItem
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -30,9 +30,9 @@ interface ApiService {
 
     @GET("transactions")
     suspend fun getTransactions(
-        @Query("start_date") startDate: String,
-        @Query("end_date") endDate: String
-    ): Response<ResponseTransactionHistoryItem>
+        @Query("startDate") startDate: String,
+        @Query("endDate") endDate: String
+    ): Response<ResponseTransactionItem>
 
     @POST("transactions")
     suspend fun createTransactions(
