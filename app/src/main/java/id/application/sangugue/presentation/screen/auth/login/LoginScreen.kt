@@ -32,10 +32,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import id.application.sangugue.presentation.navigation.Screen
-import id.application.sangugue.presentation.viewmodel.auth.AuthUiState
 import id.application.sangugue.presentation.viewmodel.auth.AuthViewModel
 import id.appliation.core.theme.PLNBlue
 import id.appliation.core.theme.White
+import id.appliation.core.utils.UiState
 import id.application.domain.model.auth.LoginRequest
 
 @Composable
@@ -52,7 +52,7 @@ fun LoginScreen(
 
     // Navigasi ke dashboard setelah login sukses
     LaunchedEffect(authState) {
-        if (authState is AuthUiState.Success) {
+        if (authState is UiState.Success) {
             navController.navigate(Screen.Dashboard.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }
@@ -124,7 +124,7 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = PLNBlue)
         ) {
-            if (authState is AuthUiState.Loading) {
+            if (authState is UiState.Loading) {
                 CircularProgressIndicator(
                     color = Color.White,
                     modifier = Modifier.size(20.dp),
@@ -135,7 +135,7 @@ fun LoginScreen(
             }
         }
 
-        if (authState is AuthUiState.Error) {
+        if (authState is UiState.Error) {
             Spacer(Modifier.height(16.dp))
             Text(
                 text = authState.message,

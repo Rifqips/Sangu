@@ -6,55 +6,51 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import id.appliation.core.utils.UiState
 import id.application.data.local.datastore.ApplicationPreferences
 import id.application.domain.model.auth.LoginRequest
 import id.application.domain.repository.AuthRepository
+import id.application.domain.usecase.auth.LoginUseCase
+import id.application.domain.usecase.auth.RegisterUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: AuthRepository,
+    private val loginUseCase: LoginUseCase,
+    private val registerUseCase: RegisterUseCase,
     private val prefs: ApplicationPreferences
 ) : ViewModel() {
 
-    var authState by mutableStateOf<AuthUiState>(AuthUiState.Idle)
+    var authState by mutableStateOf<UiState>(UiState.Idle)
         private set
 
     fun loginUser(request: LoginRequest) {
         viewModelScope.launch {
-            authState = AuthUiState.Loading
+            authState = UiState.Loading
             try {
-                val response = repository.login(request)
+                val response = loginUseCase(request)
                 prefs.saveToken(response.token)
-                authState = AuthUiState.Success(response.message)
+                authState = UiState.Success(response.message)
             } catch (e: Exception) {
-                authState = AuthUiState.Error("Login gagal: ${e.localizedMessage}")
+                authState = UiState.Error("Login gagal: ${e.localizedMessage}")
             }
         }
     }
 
     fun registerUser(request: LoginRequest) {
         viewModelScope.launch {
-            authState = AuthUiState.Loading
+            authState = UiState.Loading
             try {
-                val response = repository.register(request)
-                authState = AuthUiState.Success(response.message)
+                val response = registerUseCase(request)
+                authState = UiState.Success(response.message)
             } catch (e: Exception) {
-                authState = AuthUiState.Error("Registrasi gagal: ${e.localizedMessage}")
+                authState = UiState.Error("Registrasi gagal: ${e.localizedMessage}")
             }
         }
     }
 
     fun resetState() {
-        authState = AuthUiState.Idle
+        authState = UiState.Idle
     }
-}
-
-
-sealed class AuthUiState {
-    object Idle : AuthUiState()
-    object Loading : AuthUiState()
-    data class Success(val message: String) : AuthUiState()
-    data class Error(val message: String) : AuthUiState()
 }

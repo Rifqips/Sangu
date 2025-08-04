@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import id.application.sangugue.presentation.viewmodel.auth.AuthUiState
 import id.application.sangugue.presentation.viewmodel.auth.AuthViewModel
 import id.appliation.core.theme.PLNBlue
 import id.appliation.core.theme.White
+import id.appliation.core.utils.UiState
 import id.application.domain.model.auth.LoginRequest
 
 
@@ -49,7 +49,7 @@ fun RegisterScreen(
 
     // Navigasi balik ke Login jika sukses
     LaunchedEffect(state) {
-        if (state is AuthUiState.Success) {
+        if (state is UiState.Success) {
             navController.popBackStack()
             viewModel.resetState()
         }
@@ -119,7 +119,7 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = PLNBlue)
         ) {
-            if (state is AuthUiState.Loading) {
+            if (state is UiState.Loading) {
                 CircularProgressIndicator(
                     color = Color.White,
                     modifier = Modifier.size(20.dp),
@@ -131,7 +131,7 @@ fun RegisterScreen(
         }
 
         // Error Message
-        if (state is AuthUiState.Error) {
+        if (state is UiState.Error) {
             Spacer(Modifier.height(16.dp))
             Text(state.message, color = Color.Red, fontSize = 14.sp)
         }
