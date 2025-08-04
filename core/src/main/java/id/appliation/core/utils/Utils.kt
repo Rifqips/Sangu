@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import java.text.NumberFormat
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -13,6 +14,20 @@ object Utils {
 
     fun Int.formatCurrency(): String {
         return String.format("%,d", this).replace(',', '.')
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun String.toFormattedIndoDate(): String {
+        return try {
+            OffsetDateTime.parse(this)
+                .toLocalDate()
+                .format(
+                    DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale("id", "ID"))
+                )
+        } catch (e: Exception) {
+            this // fallback: kalau format gagal, return string as is
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

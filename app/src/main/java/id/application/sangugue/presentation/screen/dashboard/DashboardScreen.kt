@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,9 +54,9 @@ import id.appliation.core.utils.UiState
 import id.appliation.core.utils.Utils.formatCurrency
 import id.application.domain.model.transaction.ItemSummaryTransaction
 import id.application.sangugue.presentation.screen.amount.TransactionList
-import id.application.sangugue.presentation.screen.amount.sampleTransactions
 import id.application.sangugue.presentation.screen.customview.DatePickerDashboard
 import id.application.sangugue.presentation.screen.customview.rememberDatePickerDialog
+import id.application.sangugue.presentation.viewmodel.dashboard.DashboardViewModel
 import id.application.sangugue.presentation.viewmodel.transaction.TransactionViewModel
 import java.time.LocalDate
 
@@ -65,7 +64,7 @@ import java.time.LocalDate
 @Composable
 fun DashboardScreen(
     navController: NavHostController,
-    viewModel: TransactionViewModel = hiltViewModel()
+    viewModel: DashboardViewModel = hiltViewModel()
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
 
@@ -81,6 +80,7 @@ fun DashboardScreen(
                 TextButton(onClick = {
                     showLogoutDialog = false
                     navController.navigate("login") {
+                        viewModel.logout()
                         popUpTo(0)
                     }
                 }) {
@@ -125,6 +125,8 @@ fun DashboardScreen(
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
+            val email by viewModel.userEmail.collectAsState()
+
             // Header
             Row(
                 modifier = Modifier
@@ -140,7 +142,7 @@ fun DashboardScreen(
                         color = PLNBlueDark
                     )
                     Text(
-                        text = "Rifqi Padi Siliwangi",
+                        text = email ?: "",
                         style = MaterialTheme.typography.titleMedium,
                         color = GrayText
                     )
@@ -154,31 +156,12 @@ fun DashboardScreen(
                     )
                 }
             }
-
             val transactionState by viewModel.getTransactionState.collectAsState()
-            when (val state = transactionState) {
-                is UiState.Success -> {
-                    val summary = state.data?.data?.summary
-                    summary?.let {
-                        SummaryCarousel(it)
-                    }
-                }
+            val data = (transactionState as? UiState.Success)?.data?.data
 
-                is UiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                }
-
-                is UiState.Error -> {
-                    Text(
-                        "Gagal memuat ringkasan",
-                        color = Color.Red,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                }
-
-                else -> Unit
+            data?.summary?.let {
+                SummaryCarousel(it)
             }
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Row(
@@ -188,7 +171,6 @@ fun DashboardScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Kiri: Judul
                 Text(
                     text = "Transaksi Terakhir",
                     style = MaterialTheme.typography.titleMedium,
@@ -217,14 +199,34 @@ fun DashboardScreen(
                         modifier = Modifier
                     )
                 }
+            }
 
+            when (transactionState) {
+                is UiState.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
+
+                is UiState.Error -> {
+                    Text(
+                        "Gagal memuat ringkasan",
+                        color = Color.Red,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+
+                is UiState.Success -> {
+                    data?.details?.let { detailList ->
+                        TransactionList(
+                            transactions = detailList.filterNotNull().take(5),
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                }
+
+                else -> Unit
             }
 
 
-            TransactionList(
-                transactions = sampleTransactions.take(5),
-                modifier = Modifier.padding(top = 8.dp)
-            )
         }
     }
 }

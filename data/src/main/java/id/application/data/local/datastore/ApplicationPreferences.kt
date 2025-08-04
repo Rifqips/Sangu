@@ -15,6 +15,7 @@ class ApplicationPreferences(private val context: Context) {
 
     companion object {
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
+        private val USER_EMAIL = stringPreferencesKey("user_email")
     }
 
     suspend fun saveToken(token: String) {
@@ -22,6 +23,15 @@ class ApplicationPreferences(private val context: Context) {
             prefs[ACCESS_TOKEN_KEY] = token
         }
     }
+
+    suspend fun saveUserEmail(email: String) {
+        context.dataStore.edit { prefs ->
+            prefs[USER_EMAIL] = email
+        }
+    }
+
+    val getEmailFlow: Flow<String?> = context.dataStore.data
+        .map { prefs -> prefs[USER_EMAIL] }
 
     val accessTokenFlow: Flow<String?> = context.dataStore.data
         .map { prefs -> prefs[ACCESS_TOKEN_KEY] }
@@ -36,4 +46,11 @@ class ApplicationPreferences(private val context: Context) {
             prefs.remove(ACCESS_TOKEN_KEY)
         }
     }
+
+    suspend fun clearAll() {
+        context.dataStore.edit { prefs ->
+            prefs.clear()
+        }
+    }
+
 }

@@ -75,7 +75,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Sangu", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = PLNBlue)
+        Text("Masuk", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = PLNBlue)
         Spacer(Modifier.height(32.dp))
 
         OutlinedTextField(

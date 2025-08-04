@@ -26,8 +26,8 @@ fun InputAmountScreen(
 ) {
 
     var amount by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("Pemasukan") }
-    var option by remember { mutableStateOf("Jenis") }
+    var category by remember { mutableStateOf("Jenis") }
+    var option by remember { mutableStateOf("Kategori") }
     var description by remember { mutableStateOf("") }
     var transactionDate by remember { mutableStateOf(LocalDate.now()) }
     val datePickerDialog = rememberDatePickerDialog(transactionDate) {
@@ -65,10 +65,10 @@ fun InputAmountScreen(
         onInvestClick = {
             val request = ItemRequestTransaction(
                 amount = amount.toInt(),
-                category = category,
+                category = option.lowercase(),
                 description = description,
                 transactionDate = formatDate(transactionDate),
-                type = option
+                type = category.lowercase()
             )
             viewModel.createTransaction(request)
         },

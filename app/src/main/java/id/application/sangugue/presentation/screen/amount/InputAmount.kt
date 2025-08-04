@@ -204,7 +204,7 @@ fun OptionDropdownCard(
     selectedCategory: String,
     onCategorySelected: (String) -> Unit
 ) {
-    val categories = listOf("Pemasukan", "Pengeluaran")
+    val categories = listOf("Income", "Expense")
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(

@@ -44,6 +44,7 @@ class AuthViewModel @Inject constructor(
             try {
                 val response = loginUseCase(request)
                 prefs.saveToken(response.token)
+                prefs.saveUserEmail(request.email)
                 authState = UiState.Success(
                     data = response,
                     message = response.message

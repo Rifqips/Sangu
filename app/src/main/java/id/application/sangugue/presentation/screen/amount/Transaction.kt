@@ -1,5 +1,7 @@
 package id.application.sangugue.presentation.screen.amount
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,25 +28,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import id.appliation.core.theme.GrayText
 import id.appliation.core.theme.LightGray
+import id.appliation.core.theme.PurpleGrey40
+import id.appliation.core.utils.Utils.formatRupiah
+import id.appliation.core.utils.Utils.toFormattedIndoDate
+import id.application.domain.model.transaction.ItemDetailTransaction
 
-data class Transaction(
-    val id: Int,
-    val title: String,
-    val amount: Double,
-    val type: String,
-    val date: String
-)
-
-val sampleTransactions = listOf(
-    Transaction(1, "Gaji Bulanan", 8000000.0, "pemasukan", "30 Juli 2025"),
-    Transaction(2, "Makan Siang", -25000.0, "pengeluaran", "30 Juli 2025"),
-    Transaction(3, "Transport", -15000.0, "pengeluaran", "29 Juli 2025"),
-    Transaction(4, "Freelance", 3000000.0, "pemasukan", "28 Juli 2025"),
-    Transaction(5, "Belanja Online", -200000.0, "pengeluaran", "27 Juli 2025"),
-)
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TransactionList(transactions: List<Transaction>, modifier: Modifier = Modifier) {
+fun TransactionList(transactions: List<ItemDetailTransaction>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         items(transactions) { transaction ->
             TransactionItem(transaction)
@@ -52,9 +43,10 @@ fun TransactionList(transactions: List<Transaction>, modifier: Modifier = Modifi
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TransactionItem(transaction: Transaction) {
-    val isIncome = transaction.type == "pemasukan"
+fun TransactionItem(transaction: ItemDetailTransaction) {
+    val isIncome = transaction.type?.lowercase() == "income"
     val color = if (isIncome) Color(0xFF4CAF50) else Color(0xFFF44336)
 
     Card(
@@ -81,19 +73,19 @@ fun TransactionItem(transaction: Transaction) {
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = transaction.title,
+                    text = transaction.type ?: "-",
                     style = MaterialTheme.typography.bodyLarge,
                     color = GrayText
                 )
                 Text(
-                    text = transaction.date,
+                    text = transaction.transactionDate?.toFormattedIndoDate() ?:"-",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
+                    color = PurpleGrey40
                 )
             }
 
             Text(
-                text = if (isIncome) "+Rp ${transaction.amount}" else "-Rp ${-transaction.amount}",
+                text = if (isIncome) "+Rp ${formatRupiah(transaction.amount.toString())}" else "-Rp ${-(transaction.amount ?: 0)}",
                 style = MaterialTheme.typography.bodyLarge,
                 color = color
             )
